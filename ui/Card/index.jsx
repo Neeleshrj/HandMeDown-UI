@@ -11,6 +11,6 @@ export default function Card({children,styling}){
 const styles = StyleSheet.create({
     container: {
         borderRadius: 24,
-        backgroundColor: "#E5F8FF",
+        backgroundColor: "#fff",
     }
 })

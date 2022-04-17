@@ -1,7 +1,8 @@
 import { useState, useEffect, createContext, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import axios from "axios";
-// import useEnv from "../hooks/useEnv";
+import axios from "axios";
+
+import useEnv from "../hooks/useEnv";
 
 export const AuthContext = createContext();
 
@@ -9,41 +10,68 @@ export default function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(true);
-  //   const { baseURL } = useEnv();
+  const { baseURL } = useEnv();
   const init = useRef(true);
 
-  async function getTokenFromAsyncStorage() {
+  async function getInfo() {
     try {
-      const res = await AsyncStorage.getItem("token");
-      setLoading(false);
+      let res = await AsyncStorage.multiGet(["token", "userId"]);
       return res;
     } catch (e) {
       console.log(e);
-      return null;
     }
   }
 
-  async function getUserIdFromAsyncStorage() {
+  async function storeInfo(t, i) {
+    const token = ["token", t];
+    const userId = ["userId", i];
     try {
-      const res = await AsyncStorage.getItem("userId");
-      setLoading(false);
-      return res;
+      await AsyncStorage.multiSet([token, userId]);
     } catch (e) {
       console.log(e);
-      return null;
     }
   }
+  // async function getTokenFromAsyncStorage() {
+  //   try {
+  //     const res = await AsyncStorage.getItem("token");
+  //     setLoading(false);
+  //     return res;
+  //   } catch (e) {
+  //     console.log(e);
+  //     return null;
+  //   }
+  // }
 
-  async function storeInfoInAsyncStorage(t, i) {
-    try {
-      await AsyncStorage.setItem("token", t);
-      await AsyncStorage.setItem("userId", i);
-      return true;
-    } catch (e) {
-      console.log(e);
-      return false;
-    }
-  }
+  // async function getUserIdFromAsyncStorage() {
+  //   try {
+  //     const res = await AsyncStorage.getItem("userId");
+  //     setLoading(false);
+  //     return res;
+  //   } catch (e) {
+  //     console.log(e);
+  //     return null;
+  //   }
+  // }
+
+  // async function storeTokenInAsyncStorage(t) {
+  //   try {
+  //     await AsyncStorage.setItem("token", t);
+  //     return true;
+  //   } catch (e) {
+  //     console.log(e);
+  //     return false;
+  //   }
+  // }
+
+  // async function storeUserIdInAsyncStorage(i) {
+  //   try {
+  //     await AsyncStorage.setItem("userId", i);
+  //     return true;
+  //   } catch (e) {
+  //     console.log(e);
+  //     return false;
+  //   }
+  // }
 
   async function logout() {
     try {
@@ -61,19 +89,21 @@ export default function AuthProvider({ children }) {
   async function verifyToken() {
     try {
       setLoading(true);
-      const t = await getTokenFromAsyncStorage();
-      const i = await getUserIdFromAsyncStorage();
-      if (t && i) {
-        await axios.get("http://172.20.10.2:3002/api/auth/verify", {
-          headers: {
-            authorization: t,
-          },
-        });
-        await storeInfoInAsyncStorage(t, i);
-        init.current = false;
-        setToken(t);
-        setUserId(i);
-        setLoading(false);
+      const x = await getInfo();
+      console.log(x);
+      if (x[0][1] !== null) {
+        await axios
+          .post(baseURL + "/api/auth/verifyToken", {
+            token: x[0][1],
+          })
+          .then(async () => {
+            storeInfo(x[0][1], x[1][1]);
+            init.current = false;
+            setToken(x[0][1]);
+            setUserId(x[1][1]);
+            setLoading(false);
+          })
+          .catch((e) => console.log(e));
       } else {
         init.current = false;
         setToken(null);
@@ -110,7 +140,8 @@ export default function AuthProvider({ children }) {
         loading,
         setToken,
         setUserId,
-        storeInfoInAsyncStorage,
+        getInfo,
+        storeInfo,
         logout,
       }}
     >

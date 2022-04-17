@@ -14,7 +14,7 @@ export default function Router() {
     <NavigationContainer>
       {AuthContext.loading ? (
         <Loading />
-      ) : AuthContext.token === null ? (
+      ) : AuthContext.token === null && AuthContext.userId === null? (
         <AuthStackNavigator />
       ) : (
         <AppTabNav />

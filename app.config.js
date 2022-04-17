@@ -1,4 +1,6 @@
-{
+import 'dotenv/config';
+
+export default {
   "expo": {
     "name": "HandMeDown-UI",
     "slug": "HandMeDown-UI",
@@ -27,6 +29,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "baseURL": process.env.BASE_URL
     }
   }
 }

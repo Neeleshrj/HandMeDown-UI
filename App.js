@@ -6,6 +6,7 @@ import useFonts from "./hooks/useFonts";
 import Router from "./navigation/router";
 
 import AuthProvider from "./providers/AuthManager";
+import EnvProvider from "./providers/EnvManager";
 
 export default function App() {
   const [IsReady, SetIsReady] = useState(false);
@@ -25,8 +26,10 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <Router />
-    </AuthProvider>
+    <EnvProvider>
+      <AuthProvider>
+        <Router />
+      </AuthProvider>
+    </EnvProvider>
   );
 }
