@@ -30,12 +30,8 @@ export default function Typography({ textSize, textColor, textWeight, children }
       ? styles.grey1
       : textColor === "white1"
       ? styles.white1
-      : textColor === "blue1"
-      ? styles.blue1
-      : textColor === "blue2"
-      ? styles.blue2
-      : textColor === "green1"
-      ? styles.green1
+      : textColor === "primary"
+      ? styles.primary
       : textColor === "neutral"
       ? styles.neutral
       : textColor === "error1"
@@ -90,14 +86,8 @@ const styles = StyleSheet.create({
   grey1: {
     color: "#808080",
   },
-  blue1: {
-    color: "#00AEEF"
-  },
-  blue2: {
-    color: "#00648A",
-  },
-  green1: {
-    color: "#66CC33",
+  primary: {
+    color: "#F50057"
   },
   neutral: {
     color: "#41484D",

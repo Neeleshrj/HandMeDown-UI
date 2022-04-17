@@ -6,7 +6,7 @@ import Landing from "../../assets/landing.png";
 
 import Typography from "../../ui/Typography";
 
-export default function LandingPage() {
+export default function LandingPage({navigation}) {
   return (
     <View style={styles.container}>
       <View style={styles.upperContainer}>
@@ -20,7 +20,7 @@ export default function LandingPage() {
       <View style={styles.lowerContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => console.log("proceed")}
+          onPress={() => navigation.navigate("Login")}
         >
           <Ionicons
             name="chevron-forward-outline"
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     flex: 1,
-    marginTop: 100,
+    paddingTop: '20%'
   },
   upperContainer: {
     flex: 0.8,

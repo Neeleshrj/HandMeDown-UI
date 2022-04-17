@@ -3,12 +3,13 @@ import AppLoading from "expo-app-loading";
 
 import useFonts from "./hooks/useFonts";
 
-import Login from "./screens/Auth/Login";
-import Register from "./screens/Auth/Register";
+import Router from "./navigation/router";
+
+import AuthProvider from "./providers/AuthManager";
 
 export default function App() {
   const [IsReady, SetIsReady] = useState(false);
-  
+
   const PreLoad = async () => {
     await useFonts();
   };
@@ -24,6 +25,8 @@ export default function App() {
   }
 
   return (
-    <Register />
+    <AuthProvider>
+      <Router />
+    </AuthProvider>
   );
 }

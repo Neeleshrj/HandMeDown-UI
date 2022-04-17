@@ -10,6 +10,7 @@ export default function CustomTextInput({
   keyboardType,
   maxLength,
   editable,
+  secureTextEntry,
   styling,
 }) {
   return (
@@ -23,6 +24,7 @@ export default function CustomTextInput({
       keyboardType={keyboardType}
       maxLength={maxLength}
       editable={editable}
+      secureTextEntry={secureTextEntry}
       style={styling}
     />
   );

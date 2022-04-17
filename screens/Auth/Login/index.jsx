@@ -1,24 +1,67 @@
 import { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { View, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { heightPercentageToDP } from "react-native-responsive-screen";
+import axios from "axios";
 
+//components
 import Typography from "../../../ui/Typography";
 import InputContainer from "../../../ui/InputContainer";
 import CustomTextInput from "../../../ui/TextInput";
 import PrimaryButton from "../../../ui/PrimaryButton";
 
-export default function Login() {
+//providers
+import useAuth from "../../../hooks/useAuth";
+
+export default function Login({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
 
+  const AuthContext = useAuth();
+
+  const login = async () => {
+    setLoading(true);
+    const url = "http://172.20.10.2:3002/api/auth/login";
+    await axios
+      .post(url, {
+        phoneNumber: phoneNumber,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res.data.status)
+        setLoading(false);
+        if (res.data.status === 200) {
+          AuthContext.setToken(res.data.token);
+          AuthContext.setUserId(res.data.userId);
+          AuthContext.storeInfoInAsyncStorage(res.data.token, res.data.userId);
+        } else {
+          Alert.alert("Login failed!", "Invalid phone number or password", [
+            {
+              text: "Ok",
+              onPress: null,
+            },
+          ]);
+        }
+      })
+      .catch((e) => {
+        Alert.alert("Login failed!", "Fields cannot be empty", [
+          {
+            text: "Ok",
+            onPress: null,
+          },
+        ]);
+        console.log(e);
+      });
+  };
   return (
     <>
       <ScrollView style={styles.container}>
         <View style={{ paddingHorizontal: "4%" }}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => console.log("proceed")}
+            onPress={() => navigation.pop()}
           >
             <Ionicons
               name="chevron-back-outline"
@@ -34,32 +77,66 @@ export default function Login() {
         </View>
         <View style={{ marginTop: "5%", marginHorizontal: "4%" }}>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons name="call-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Phone Number"
               value={phoneNumber}
               styling={{ padding: "5%", width: "85%" }}
               onChangeText={(val) => setPhoneNumber(val)}
+              keyboardType="number-pad"
             />
           </InputContainer>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons
+              name="lock-closed-outline"
+              size={24}
+              color="#F50057"
+              style={{}}
+            />
             <CustomTextInput
               placeholder="Password"
               value={password}
-              styling={{ padding: "5%", width: "85%" }}
+              styling={{ padding: "5%", width: "80%" }}
               onChangeText={(val) => setPassword(val)}
+              secureTextEntry={showPassword}
+            />
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={24}
+              color="#F50057"
+              style={{ paddingRight: "0%" }}
+              onPress={() => setShowPassword(!showPassword)}
             />
           </InputContainer>
         </View>
       </ScrollView>
-      <PrimaryButton
-        borderRadius={12}
-        styling={{ marginHorizontal: "4%", marginBottom: "10%" }}
-        action={() => console.log("login")}
-      >
-        <Typography textSize="h5" textColor="white1" textWeight="600">
-          Login
-        </Typography>
-      </PrimaryButton>
+      <View style={{ backgroundColor: "#fff", alignItems: "center" }}>
+        <View style={{ flexDirection: "row" }}>
+          <Typography textSize="h6" textWeight="400" textColor="black1">
+            New User? Sign Up{" "}
+          </Typography>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Typography textSize="h6" textWeight="400" textColor="primary">
+              here
+            </Typography>
+          </TouchableOpacity>
+        </View>
+
+        <PrimaryButton
+          borderRadius={12}
+          styling={{
+            marginHorizontal: "4%",
+            marginBottom: "10%",
+            width: "90%",
+            marginTop: "5%",
+          }}
+          action={() => login()}
+        >
+          <Typography textSize="h4" textColor="white1" textWeight="600">
+            Sign In
+          </Typography>
+        </PrimaryButton>
+      </View>
     </>
   );
 }
@@ -67,7 +144,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 80,
+    backgroundColor: "#fff",
+    paddingTop: "20%",
   },
   headerContainer: {
     paddingVertical: "2%",
@@ -85,5 +163,6 @@ const styles = StyleSheet.create({
   },
   inputAreaContainer: {
     marginVertical: "2%",
+    paddingLeft: "5%",
   },
 });
