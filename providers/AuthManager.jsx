@@ -9,7 +9,7 @@ export const AuthContext = createContext();
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { baseURL } = useEnv();
   const init = useRef(true);
 
@@ -31,54 +31,12 @@ export default function AuthProvider({ children }) {
       console.log(e);
     }
   }
-  // async function getTokenFromAsyncStorage() {
-  //   try {
-  //     const res = await AsyncStorage.getItem("token");
-  //     setLoading(false);
-  //     return res;
-  //   } catch (e) {
-  //     console.log(e);
-  //     return null;
-  //   }
-  // }
-
-  // async function getUserIdFromAsyncStorage() {
-  //   try {
-  //     const res = await AsyncStorage.getItem("userId");
-  //     setLoading(false);
-  //     return res;
-  //   } catch (e) {
-  //     console.log(e);
-  //     return null;
-  //   }
-  // }
-
-  // async function storeTokenInAsyncStorage(t) {
-  //   try {
-  //     await AsyncStorage.setItem("token", t);
-  //     return true;
-  //   } catch (e) {
-  //     console.log(e);
-  //     return false;
-  //   }
-  // }
-
-  // async function storeUserIdInAsyncStorage(i) {
-  //   try {
-  //     await AsyncStorage.setItem("userId", i);
-  //     return true;
-  //   } catch (e) {
-  //     console.log(e);
-  //     return false;
-  //   }
-  // }
 
   async function logout() {
     try {
       setToken(null);
       setUserId(null);
-      await AsyncStorage.removeItem("token");
-      await AsyncStorage.removeItem("userId");
+      await AsyncStorage.multiRemove(["token","userId"]);
       return true;
     } catch (e) {
       console.log(e);
@@ -129,7 +87,8 @@ export default function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    if (!init.current) setLoading(false);
+    // if (!init.current) setLoading(false);
+    verifyToken()
   }, [token]);
 
   return (

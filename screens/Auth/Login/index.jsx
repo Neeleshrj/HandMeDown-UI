@@ -40,6 +40,7 @@ export default function Login({ navigation }) {
       .then((res) => {
         setLoading(false);
         if (res.data.status === 200) {
+          console.log(res.data)
           AuthContext.setToken(res.data.authToken);
           AuthContext.setUserId(res.data.user_id);
           // AuthContext.storeTokenInAsyncStorage(res.data.authToken);

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator, Image } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+  Image,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 
@@ -11,6 +17,7 @@ import Completed from "../../assets/completed.png";
 //components
 import Typography from "../../ui/Typography";
 import Card from "../../ui/Card";
+import ActiveJobBox from "./ActiveJobBox";
 
 //hooks
 import useEnv from "../../hooks/useEnv";
@@ -46,15 +53,18 @@ export default function Dashboard() {
       });
   }
 
-  async function getActiveJobs(){
+  async function getActiveJobs() {
     const url = baseURL + "/api/userInfo/activeJobs/" + AuthContext.userId;
-    await axios .get(url, {
-      headers: {
-        "x-auth-token": AuthContext.token,
-      }
-    }).then((res) => {
-      setActiveJobs(res.data);
-    }).catch(e => console.log(e));
+    await axios
+      .get(url, {
+        headers: {
+          "x-auth-token": AuthContext.token,
+        },
+      })
+      .then((res) => {
+        setActiveJobs(res.data);
+      })
+      .catch((e) => console.log(e));
   }
 
   useEffect(() => {
@@ -168,17 +178,24 @@ export default function Dashboard() {
         <View style={styles.activeJobsContainer}>
           {activeJobs === null ? (
             <ActivityIndicator />
+          ) : activeJobs.activeJobs.length !== 0 ? (
+            <ScrollView>
+              {activeJobs.activeJobs.map((x,i) => (
+                 
+                 <ActiveJobBox data={x} key={i} />
+              ))}
+             
+            </ScrollView>
           ) : (
-            activeJobs.activeJobs.length !== 0 ? (
-              null
-            ) : (
-              <View style={{ alignItems: 'center'}}>
-                <Image source={Completed} style={{width: '100%', height: '80%'}}/>
-                <Typography textSize="h4" textWeight="400">
+            <View style={{ alignItems: "center" }}>
+              <Image
+                source={Completed}
+                style={{ width: "100%", height: "80%" }}
+              />
+              <Typography textSize="h4" textWeight="400">
                 No Active Jobs. Wohoo!
               </Typography>
-              </View>
-            )
+            </View>
           )}
         </View>
       </View>
@@ -210,6 +227,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeJobsContainer: {
-    paddingHorizontal: "4%"
-  }
+    paddingHorizontal: "4%",
+    flex: 1
+  },
 });
