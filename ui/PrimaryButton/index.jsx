@@ -1,10 +1,10 @@
-import {Pressable, StyleSheet} from 'react-native';
+import {TouchableOpacity, StyleSheet} from 'react-native';
 
 export default function PrimaryButton({children, flex, borderRadius, styling, action, disabled}){
     return(
-        <Pressable style={[styles.button,{flex: flex,borderRadius: borderRadius},styling]} onPress={action} disabled={disabled}>
+        <TouchableOpacity style={[styles.button,{flex: flex,borderRadius: borderRadius},styling]} onPress={action} disabled={disabled}>
             {children}
-        </Pressable>
+        </TouchableOpacity>
     )
 }
 

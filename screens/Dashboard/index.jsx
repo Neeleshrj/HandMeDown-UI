@@ -156,7 +156,7 @@ export default function Dashboard() {
                   size={heightPercentageToDP(4)}
                 />
                 <Typography textSize="h2" textWeight="600">
-                  {data.tasksPosted}
+                  {data.tasksCompleted}
                 </Typography>
                 <Typography textSize="h6" textWeight="600">
                   Jobs
@@ -179,7 +179,7 @@ export default function Dashboard() {
           {activeJobs === null ? (
             <ActivityIndicator />
           ) : activeJobs.activeJobs.length !== 0 ? (
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingHorizontal: '4%', flex: 1, flexGrow: 1}}>
               {activeJobs.activeJobs.map((x,i) => (
                  
                  <ActiveJobBox data={x} key={i} />
@@ -227,7 +227,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeJobsContainer: {
-    paddingHorizontal: "4%",
     flex: 1
   },
 });

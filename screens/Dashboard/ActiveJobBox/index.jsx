@@ -26,8 +26,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderColor: "#F50057",
     borderWidth: 1,
-    borderRadius: 24,
+    borderRadius: 12,
     padding: "4%",
     marginTop: "4%",
+    elevation: 10,
   },
 });

@@ -49,6 +49,7 @@ export default function AppTabNav() {
               />
             </View>
           ),
+          headerShown: false
         }}
       />
       <Tab.Screen
