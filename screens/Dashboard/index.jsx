@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator, Image } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios";
 
 import Loading from "../Loading";
+
+//assets
+import Completed from "../../assets/completed.png";
 
 //components
 import Typography from "../../ui/Typography";
@@ -16,6 +19,7 @@ import { heightPercentageToDP } from "react-native-responsive-screen";
 
 export default function Dashboard() {
   const [data, setData] = useState(null);
+  const [activeJobs, setActiveJobs] = useState(null);
   const [loading, setLoading] = useState(false);
   const { baseURL } = useEnv();
   const AuthContext = useAuth();
@@ -42,8 +46,20 @@ export default function Dashboard() {
       });
   }
 
+  async function getActiveJobs(){
+    const url = baseURL + "/api/userInfo/activeJobs/" + AuthContext.userId;
+    await axios .get(url, {
+      headers: {
+        "x-auth-token": AuthContext.token,
+      }
+    }).then((res) => {
+      setActiveJobs(res.data);
+    }).catch(e => console.log(e));
+  }
+
   useEffect(() => {
     getData();
+    getActiveJobs();
   }, []);
 
   if (data === null) {
@@ -146,9 +162,25 @@ export default function Dashboard() {
         </ScrollView>
       </View>
       <View style={styles.lowerContainer}>
-        <Typography textSize="h6" textWeight="600">
-          On Going Jobs
+        <Typography textSize="h3" textWeight="600">
+          Active Jobs
         </Typography>
+        <View style={styles.activeJobsContainer}>
+          {activeJobs === null ? (
+            <ActivityIndicator />
+          ) : (
+            activeJobs.activeJobs.length !== 0 ? (
+              null
+            ) : (
+              <View style={{ alignItems: 'center'}}>
+                <Image source={Completed} style={{width: '100%', height: '80%'}}/>
+                <Typography textSize="h4" textWeight="400">
+                No Active Jobs. Wohoo!
+              </Typography>
+              </View>
+            )
+          )}
+        </View>
       </View>
     </View>
   );
@@ -176,7 +208,8 @@ const styles = StyleSheet.create({
   },
   lowerContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
+  activeJobsContainer: {
+    paddingHorizontal: "4%"
+  }
 });
