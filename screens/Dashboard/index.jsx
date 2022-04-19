@@ -7,7 +7,9 @@ import {
   Image,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 import Loading from "../Loading";
 
@@ -30,6 +32,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const { baseURL } = useEnv();
   const AuthContext = useAuth();
+  const isFocused = useIsFocused();
 
   async function getData() {
     setLoading(true);
@@ -70,136 +73,150 @@ export default function Dashboard() {
   useEffect(() => {
     getData();
     getActiveJobs();
-  }, []);
+  }, [isFocused]);
 
   if (data === null) {
     return <Loading />;
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.upperContainer}>
-        <View
-          style={{
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            marginBottom: "5%",
-          }}
-        >
-          <Typography textSize="h1" textWeight="600" textColor="primary">
-            {data.totalIncome} Koins
-          </Typography>
-          <Typography textSize="h3" textWeight="600">
-            Total Income
-          </Typography>
-        </View>
-        <Typography textSize="h4" textWeight="600">
-          Statistics
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff"}}>
+      <View style={styles.headerContainer}>
+      <Typography textSize="h3" textWeight="600" textColor="black1">
+          Hello,{" "}
         </Typography>
-        <ScrollView
-          horizontal
-          contentContainerStyle={{ flexGrow: 1 }}
-          showsHorizontalScrollIndicator={false}
-        >
-          {/* <View> */}
-          {/* Tasks Accepted */}
-          <View style={{ width: 160 }}>
-            <Card styling={styles.statCard}>
-              <View>
-                <Ionicons
-                  name="list-outline"
-                  color="#000"
-                  size={heightPercentageToDP(4)}
-                />
-                <Typography textSize="h2" textWeight="600">
-                  {data.tasksAccepted}
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Jobs
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Accepted
-                </Typography>
-              </View>
-            </Card>
-          </View>
-
-          {/* Tasks Posted */}
-          <View style={{ width: 160, height: 150 }}>
-            <Card styling={styles.statCard}>
-              <View>
-                <Ionicons
-                  name="add-circle-outline"
-                  color="#000"
-                  size={heightPercentageToDP(4)}
-                />
-                <Typography textSize="h2" textWeight="600">
-                  {data.tasksPosted}
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Jobs
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Posted
-                </Typography>
-              </View>
-            </Card>
-          </View>
-
-          {/* Tasks Completed */}
-          <View style={{ width: 160, height: 150 }}>
-            <Card styling={styles.statCard}>
-              <View>
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  color="#000"
-                  size={heightPercentageToDP(4)}
-                />
-                <Typography textSize="h2" textWeight="600">
-                  {data.tasksCompleted}
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Jobs
-                </Typography>
-                <Typography textSize="h6" textWeight="600">
-                  Completed
-                </Typography>
-              </View>
-            </Card>
-          </View>
-
-          {/* </View> */}
-        </ScrollView>
+        <Typography textSize="h3" textWeight="600" textColor="black1">
+          {data.name}
+        </Typography>
       </View>
-      <View style={styles.lowerContainer}>
-        <Typography textSize="h3" textWeight="600">
-          Active Jobs
-        </Typography>
-        <View style={styles.activeJobsContainer}>
-          {activeJobs === null ? (
-            <ActivityIndicator />
-          ) : activeJobs.activeJobs.length !== 0 ? (
-            <ScrollView contentContainerStyle={{ paddingHorizontal: '4%', flex: 1, flexGrow: 1}}>
-              {activeJobs.activeJobs.map((x,i) => (
-                 
-                 <ActiveJobBox data={x} key={i} />
-              ))}
-             
-            </ScrollView>
-          ) : (
-            <View style={{ alignItems: "center" }}>
-              <Image
-                source={Completed}
-                style={{ width: "100%", height: "80%" }}
-              />
-              <Typography textSize="h4" textWeight="400">
-                No Active Jobs. Wohoo!
-              </Typography>
+      <View style={styles.container}>
+        <View style={styles.upperContainer}>
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              marginBottom: "5%",
+            }}
+          >
+            <Typography textSize="h1" textWeight="600" textColor="primary">
+              {data.totalIncome} Koins
+            </Typography>
+            <Typography textSize="h3" textWeight="600">
+              Total Income
+            </Typography>
+          </View>
+          <Typography textSize="h4" textWeight="600">
+            Statistics
+          </Typography>
+          <ScrollView
+            horizontal
+            contentContainerStyle={{ flexGrow: 1 }}
+            showsHorizontalScrollIndicator={false}
+          >
+            {/* <View> */}
+            {/* Tasks Accepted */}
+            <View style={{ width: 160 }}>
+              <Card styling={styles.statCard}>
+                <View>
+                  <Ionicons
+                    name="list-outline"
+                    color="#000"
+                    size={heightPercentageToDP(4)}
+                  />
+                  <Typography textSize="h2" textWeight="600">
+                    {data.tasksAccepted}
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Jobs
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Accepted
+                  </Typography>
+                </View>
+              </Card>
             </View>
-          )}
+
+            {/* Tasks Posted */}
+            <View style={{ width: 160, height: 150 }}>
+              <Card styling={styles.statCard}>
+                <View>
+                  <Ionicons
+                    name="add-circle-outline"
+                    color="#000"
+                    size={heightPercentageToDP(4)}
+                  />
+                  <Typography textSize="h2" textWeight="600">
+                    {data.tasksPosted}
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Jobs
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Posted
+                  </Typography>
+                </View>
+              </Card>
+            </View>
+
+            {/* Tasks Completed */}
+            <View style={{ width: 160, height: 150 }}>
+              <Card styling={styles.statCard}>
+                <View>
+                  <Ionicons
+                    name="checkmark-circle-outline"
+                    color="#000"
+                    size={heightPercentageToDP(4)}
+                  />
+                  <Typography textSize="h2" textWeight="600">
+                    {data.tasksCompleted}
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Jobs
+                  </Typography>
+                  <Typography textSize="h6" textWeight="600">
+                    Completed
+                  </Typography>
+                </View>
+              </Card>
+            </View>
+
+            {/* </View> */}
+          </ScrollView>
+        </View>
+        <View style={styles.lowerContainer}>
+          <Typography textSize="h3" textWeight="600">
+            Active Jobs
+          </Typography>
+          <View style={styles.activeJobsContainer}>
+            {activeJobs === null ? (
+              <ActivityIndicator />
+            ) : activeJobs.activeJobs.length !== 0 ? (
+              <ScrollView
+                contentContainerStyle={{
+                  paddingHorizontal: "4%",
+                  flexGrow: 1,
+                  paddingBottom: '5%'
+                }}
+              >
+                {activeJobs.activeJobs.map((x, i) => (
+                  <ActiveJobBox data={x} key={i} />
+                ))}
+              </ScrollView>
+            ) : (
+              <View style={{ alignItems: "center" }}>
+                <Image
+                  source={Completed}
+                  style={{ width: "100%", height: "80%" }}
+                />
+                <Typography textSize="h4" textWeight="400">
+                  No Active Jobs. Wohoo!
+                </Typography>
+              </View>
+            )}
+          </View>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -207,7 +224,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: "2%",
+    paddingHorizontal: "4%",
+  },
+  headerContainer: {
+    paddingVertical: '4%',
+    paddingHorizontal: '4%',
+    flexDirection: 'row',
+    borderColor: "#F50057",
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+    borderBottomRightRadius: 16,
+    borderBottomLeftRadius: 16,
+    marginBottom: '4%'
   },
   upperContainer: {
     flex: 1,
@@ -227,6 +256,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   activeJobsContainer: {
-    flex: 1
+    flex: 1,
   },
 });

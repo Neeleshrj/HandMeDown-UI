@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { heightPercentageToDP } from "react-native-responsive-screen";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 //components
 import Typography from "../../ui/Typography";
@@ -16,31 +17,37 @@ import useEnv from "../../hooks/useEnv";
 import useAuth from "../../hooks/useAuth";
 import JobBox from "./JobBox";
 
-export default function TakeJob() {
+export default function TakeJob({ navigation }) {
   const [data, setData] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const isFocused = useIsFocused();
 
   const { baseURL } = useEnv();
   const AuthContext = useAuth();
 
   async function getData() {
     const url = baseURL + "/api/tasks/all/" + AuthContext.userId;
-    axios
+    await axios
       .get(url, {
         headers: {
           "x-auth-token": AuthContext.token,
         },
       })
       .then((res) => {
-          console.log(res.data)
         setData(res.data);
       })
       .catch((e) => console.log(e));
   }
 
   useEffect(() => {
+    if (isFocused) {
+      getData();
+    }
+  });
+
+  useEffect(() => {
     getData();
-  }, []);
+  }, [isFocused]);
 
   if (data === null) {
     return <Loading />;
@@ -68,7 +75,9 @@ export default function TakeJob() {
         </InputContainer>
       </View>
       <View style={styles.taskContainer}>
-          <JobBox data={data[0]}/>
+        {data.map((x, i) => (
+          <JobBox data={x} key={i} navigation={navigation} />
+        ))}
       </View>
       <TouchableOpacity style={styles.addTaskButton}>
         <Ionicons

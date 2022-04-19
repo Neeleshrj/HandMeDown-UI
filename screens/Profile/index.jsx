@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { heightPercentageToDP } from "react-native-responsive-screen";
 import axios from "axios";
+import { useIsFocused } from "@react-navigation/native";
 
 //components
 import Typography from "../../ui/Typography";
@@ -20,6 +21,7 @@ export default function Profile() {
   const [data, setData] = useState(null);
   const { baseURL } = useEnv();
   const AuthContext = useAuth();
+  const isFocused = useIsFocused();
 
   async function logout(){
       AuthContext.logout();
@@ -41,7 +43,7 @@ export default function Profile() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [isFocused]);
 
   if (data === null) {
     return <Loading />;

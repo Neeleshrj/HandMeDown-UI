@@ -4,8 +4,7 @@ import { heightPercentageToDP } from "react-native-responsive-screen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Dashboard from "../screens/Dashboard";
-import ListJob from "../screens/ListJob";
-import TakeJob from "../screens/TakeJob";
+import JobsStackNav from "./JobsStackNav";
 import Profile from "../screens/Profile";
 
 const Tab = createBottomTabNavigator();
@@ -14,7 +13,7 @@ export default function AppTabNav() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         tabBarStyle: styles.tabNav,
@@ -38,7 +37,7 @@ export default function AppTabNav() {
       />
       <Tab.Screen
         name="Jobs"
-        component={TakeJob}
+        component={JobsStackNav}
         options={{
           tabBarIcon: ({ focused }) => (
             <View>
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
   tabNav: {
     backgroundColor: "#F50057",
     height: heightPercentageToDP(8),
-    borderTopRightRadius: 16,
-    borderTopLeftRadius: 16,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
   },
 });
