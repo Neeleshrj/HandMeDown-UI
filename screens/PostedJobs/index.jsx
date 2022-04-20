@@ -97,7 +97,7 @@ export default function PostedJobs() {
         ))}
         <View style={styles.headerContainer}>
         <Typography textSize="h1" textWeight="400" textColor="primary">
-          Jobs Completed
+          Completed Jobs
         </Typography>
         {completed.map((x, i) => (
           <JobBox data={x} key={i} setChange={setChange} status="completed"/>
