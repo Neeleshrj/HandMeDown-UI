@@ -5,7 +5,9 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import Dashboard from "../screens/Dashboard";
 import JobsStackNav from "./JobsStackNav";
+import PostedJobsStackNav from "./PostedJobsStackNav";
 import Profile from "../screens/Profile";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +45,22 @@ export default function AppTabNav() {
             <View>
               <Ionicons
                 name="briefcase-outline"
+                color={focused ? "#fff" : "#e3a3ba"}
+                size={heightPercentageToDP(4)}
+              />
+            </View>
+          ),
+          headerShown: false
+        }}
+      />
+      <Tab.Screen
+        name="JobsPosted"
+        component={PostedJobsStackNav}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View>
+              <Ionicons
+                name="reader-outline"
                 color={focused ? "#fff" : "#e3a3ba"}
                 size={heightPercentageToDP(4)}
               />

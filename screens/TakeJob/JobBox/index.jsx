@@ -20,7 +20,7 @@ export default function JobBox({ data, navigation }) {
           style={{ marginRight: "1%" }}
         />
         <Typography textSize="h4" textWeight="400" textColor="neutral">
-          Chennai
+          {data.location.county}
         </Typography>
       </View>
       <View style={styles.buttonContainer}>

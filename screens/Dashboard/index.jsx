@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [activeJobs, setActiveJobs] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [change,setChange] = useState(false);
   const { baseURL } = useEnv();
   const AuthContext = useAuth();
   const isFocused = useIsFocused();
@@ -75,6 +76,12 @@ export default function Dashboard() {
     getActiveJobs();
   }, [isFocused]);
 
+  useEffect(() => {
+    getData();
+    getActiveJobs();
+    setChange(false)
+  }, [change]);
+
   if (data === null) {
     return <Loading />;
   }
@@ -85,7 +92,7 @@ export default function Dashboard() {
           Hello,{" "}
         </Typography>
         <Typography textSize="h3" textWeight="600" textColor="black1">
-          {data.name}
+          {data.name.split(" ")[0]}
         </Typography>
       </View>
       <View style={styles.container}>
@@ -199,7 +206,7 @@ export default function Dashboard() {
                 }}
               >
                 {activeJobs.activeJobs.map((x, i) => (
-                  <ActiveJobBox data={x} key={i} />
+                  <ActiveJobBox data={x} key={i} setChange={setChange} />
                 ))}
               </ScrollView>
             ) : (
