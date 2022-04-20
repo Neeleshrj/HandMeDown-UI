@@ -73,7 +73,14 @@ export default function ListJob({ navigation }) {
           },
         ]);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e)
+        Alert.alert("Something wrong happened!", "", [
+          {
+            text: "Retry",
+          },
+        ]);
+      });
   }
 
   const pickImage = async () => {

@@ -1,23 +1,96 @@
 import { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { heightPercentageToDP } from "react-native-responsive-screen";
+import axios from "axios";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import Typography from "../../../ui/Typography";
 import InputContainer from "../../../ui/InputContainer";
 import CustomTextInput from "../../../ui/TextInput";
 import PrimaryButton from "../../../ui/PrimaryButton";
 
-export default function Register({navigation}) {
+//hooks
+import useEnv from "../../../hooks/useEnv";
+
+export default function Register({ navigation }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
   //   const [publicKey, setPublicKey] = useState("");
 
+  const { baseURL } = useEnv();
+
+  function preChecks() {
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!phoneNumber || phoneNumber.length != 10) {
+      Alert.alert("Invalid phone number!", "", [
+        {
+          text: "Retry",
+        },
+      ]);
+    }
+    else if (!email || !email.match(emailRegex)) {
+      Alert.alert("Invalid email!", "", [
+        {
+          text: "Retry",
+        },
+      ]);
+    }
+    else if (!password) {
+      Alert.alert("Password cannot be empty!", "", [
+        {
+          text: "Retry",
+        },
+      ]);
+    }
+    else{
+      register()
+    }
+  }
+
+  async function register() {
+    const url = baseURL + "/api/auth/register";
+    await axios
+      .post(url, {
+        phoneNumber: phoneNumber,
+        fullname: fullName,
+        email: email,
+        password: password,
+        cPassword: cPassword,
+        tasksCompleted: 0,
+        totalIncome: 0
+      },{})
+      .then((res) => {
+        Alert.alert("Registered!", "", [
+          {
+            text: "Ok",
+            onPress: () => navigation.pop(),
+          },
+        ]);
+      })
+      .catch((e) => {
+        console.log(e);
+        Alert.alert("Something went wrong!", "", [
+          {
+            text: "Ok",
+            onPress: null,
+          },
+        ]);
+      });
+  }
+
   return (
-    <>
+    <SafeAreaView style={{backgroundColor: '#fff'}}>
       <ScrollView style={styles.container}>
         <View style={{ paddingHorizontal: "4%" }}>
           <TouchableOpacity
@@ -38,14 +111,17 @@ export default function Register({navigation}) {
         </View>
         <View style={{ marginTop: "5%", marginHorizontal: "4%" }}>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons name="call-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Phone Number"
               value={phoneNumber}
               styling={{ padding: "5%", width: "85%" }}
               onChangeText={(val) => setPhoneNumber(val)}
+              keyboardType="phone-pad"
             />
           </InputContainer>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons name="person-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Full Name"
               value={fullName}
@@ -54,6 +130,7 @@ export default function Register({navigation}) {
             />
           </InputContainer>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons name="mail-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Email"
               value={email}
@@ -62,26 +139,43 @@ export default function Register({navigation}) {
             />
           </InputContainer>
           <InputContainer styling={styles.inputAreaContainer}>
+            <Ionicons name="lock-closed-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Password"
               value={password}
-              styling={{ padding: "5%", width: "85%" }}
+              styling={{ padding: "5%", width: "80%" }}
               onChangeText={(val) => setPassword(val)}
+              secureTextEntry={showPassword}
+            />
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={24}
+              color="#F50057"
+              style={{ paddingRight: "0%" }}
+              onPress={() => setShowPassword(!showPassword)}
             />
           </InputContainer>
           <InputContainer
             styling={[styles.inputAreaContainer, { marginBottom: "10%" }]}
           >
+            <Ionicons name="lock-closed-outline" size={24} color="#F50057" />
             <CustomTextInput
               placeholder="Confirm Password"
               value={cPassword}
-              styling={{ padding: "5%", width: "85%" }}
+              styling={{ padding: "5%", width: "80%" }}
               onChangeText={(val) => setCPassword(val)}
+              secureTextEntry={showPassword}
+            />
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={24}
+              color="#F50057"
+              style={{ paddingRight: "0%" }}
+              onPress={() => setShowPassword(!showPassword)}
             />
           </InputContainer>
         </View>
-      </ScrollView>
-      <View style={{ backgroundColor: "#fff", alignItems: "center" }}>
+        <View style={{ backgroundColor: "#fff", alignItems: "center" }}>
         <View style={{ flexDirection: "row" }}>
           <Typography textSize="h6" textWeight="400" textColor="black1">
             Old User? Sign In{" "}
@@ -101,22 +195,24 @@ export default function Register({navigation}) {
             width: "90%",
             marginTop: "5%",
           }}
-          action={() => console.log("login")}
+          action={() => preChecks()}
         >
           <Typography textSize="h4" textColor="white1" textWeight="600">
-            Sign In
+            Sign Up
           </Typography>
         </PrimaryButton>
       </View>
-    </>
+      </ScrollView>
+      
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: '20%',
-    backgroundColor: '#fff'
+    paddingTop: '5%',
+    backgroundColor: "#fff",
+    paddingBottom: '50%'
   },
   headerContainer: {
     paddingVertical: "2%",
@@ -134,5 +230,6 @@ const styles = StyleSheet.create({
   },
   inputAreaContainer: {
     marginVertical: "2%",
+    paddingLeft: "5%",
   },
 });

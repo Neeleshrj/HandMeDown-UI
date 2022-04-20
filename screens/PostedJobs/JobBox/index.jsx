@@ -107,9 +107,9 @@ export default function JobBox({ data, setChange, status }) {
           size={heightPercentageToDP(2.5)}
           style={{ marginRight: "1%" }}
         />
-        {/* <Typography textSize="h4" textWeight="400" textColor="neutral">
+        <Typography textSize="h4" textWeight="400" textColor="neutral">
           {data.location.county}
-        </Typography> */}
+        </Typography>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Ionicons

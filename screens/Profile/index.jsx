@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { heightPercentageToDP } from "react-native-responsive-screen";
@@ -23,8 +23,8 @@ export default function Profile() {
   const AuthContext = useAuth();
   const isFocused = useIsFocused();
 
-  async function logout(){
-      AuthContext.logout();
+  async function logout() {
+    AuthContext.logout();
   }
 
   async function getData() {
@@ -109,13 +109,34 @@ export default function Profile() {
           </View>
         </View>
 
-        <View style={{flexDirection: 'row',width: '100%', justifyContent: 'space-around', marginTop: '4%'}}>
-          <PrimaryButton styling={{width: '40%', borderRadius: 24}}>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "space-around",
+            marginTop: "4%",
+          }}
+        >
+          <PrimaryButton styling={{ width: "40%", borderRadius: 24 }}>
             <Typography textSize="h3" textWeight="600" textColor="white1">
               Link Wallet
             </Typography>
           </PrimaryButton>
-          <SecondaryButton styling={{width: '40%', borderRadius: 100}} action={() => logout()}>
+          <SecondaryButton
+            styling={{ width: "40%", borderRadius: 100 }}
+            action={() =>
+              Alert.alert("Do you want to logout?", "", [
+                {
+                  text: "Yes",
+                  onPress: () => logout(),
+                },
+                {
+                  text: "Cancel",
+                  onPress: null,
+                },
+              ])
+            }
+          >
             <Typography textSize="h3" textWeight="600">
               Logout
             </Typography>

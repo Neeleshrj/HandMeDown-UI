@@ -43,8 +43,6 @@ export default function Login({ navigation }) {
           console.log(res.data)
           AuthContext.setToken(res.data.authToken);
           AuthContext.setUserId(res.data.user_id);
-          // AuthContext.storeTokenInAsyncStorage(res.data.authToken);
-          // AuthContext.storeUserIdInAsyncStorage(res.data.user_id);
           AuthContext.storeInfo(res.data.authToken, res.data.user_id);
         } else {
           Alert.alert("Login failed!", "Invalid phone number or password", [
@@ -56,7 +54,7 @@ export default function Login({ navigation }) {
         }
       })
       .catch((e) => {
-        Alert.alert("Login failed!", "Fields cannot be empty", [
+        Alert.alert("Login failed!", "", [
           {
             text: "Ok",
             onPress: null,
