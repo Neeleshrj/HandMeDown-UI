@@ -12,6 +12,15 @@ Current working features-
     <li>Delete a job</li>
 </ol>
 
+<br>
+<h4>How to run-</h4>
+<ol>
+    <li>git clone</li>
+    <li>npm i</li>
+    <li>expo start</li>
+</ol>
+
+<h6>Note- You will also need the backend to be running to make it working</h6>
 
 <h4>Screenshots-</h4>
 
